@@ -1,4 +1,5 @@
 require 'faraday'
+require 'dotenv/load'
 
 class GithubController < ApplicationController
   def index
@@ -7,7 +8,7 @@ class GithubController < ApplicationController
 
     # Make a request to the GitHub API using GraphQL
     response = Faraday.post('https://api.github.com/graphql') do |req|
-      req.headers['Authorization'] = "bearer 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"
+      req.headers['Authorization'] = "Bearer #{ENV['GITHUB_API_TOKEN']}"
       req.headers['Content-Type'] = 'application/json'
       req.body = { query: graphql_query(@github_login) }.to_json
     end

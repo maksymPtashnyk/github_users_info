@@ -69,3 +69,5 @@ end
 gem 'graphql'
 gem "graphiql-rails", group: :development
 gem 'faraday'
+
+gem 'dotenv'
