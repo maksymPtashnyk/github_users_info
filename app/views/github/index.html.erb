@@ -1,0 +1,31 @@
+<div class="container mt-5">
+  <h1 class="display-4 mb-4">GitHub User Information</h1>
+  <%= form_tag('/github', method: 'get', class: 'mb-4') do %>
+    <div class="input-group">
+      <%= label_tag(:github_login, 'GitHub Login', class: 'input-group-text') %>
+      <%= text_field_tag(:github_login, nil, required: true, placeholder: 'Enter GitHub login', class: 'form-control') %>
+      <button type="submit" class="btn btn-primary">Find Information</button>
+    </div>
+  <% end %>
+
+  <% if @github_name.present? || @repos.present? %>
+    <div class="mt-5">
+      <% if @avatar_url.present? %>
+        <%= image_tag @avatar_url, alt: 'User Avatar', class: 'avatar rounded-circle mb-3', style: 'width: 100px; height: 100px;' %>
+      <% end %>
+      <h2 class="fw-bold"><%= @github_name %></h2>
+      <ul class="list-group mt-3">
+        <li class="list-group-item list-group-item-primary fw-bold">List of Repositories</li>
+        <% @repos.each do |repo| %>
+          <li class="list-group-item list-group-item-action">
+            <%= link_to repo, "https://github.com/#{@github_login}/#{repo}", target: '_blank', style: 'text-decoration: none; color: inherit;' %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% else %>
+    <h2 class="mt-5">No user information found</h2>
+  <% end %>
+</div>
+
+
