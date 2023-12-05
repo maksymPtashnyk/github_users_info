@@ -3,6 +3,8 @@
 require 'faraday'
 require 'dotenv/load'
 
+# GithubController handles requests related to GitHub user information.
+# It communicates with the GitHub API to retrieve user data such as repositories, name, and avatar.
 class GithubController < ApplicationController
   def index
     @github_login = params[:github_login]

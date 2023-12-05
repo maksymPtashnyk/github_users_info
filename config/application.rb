@@ -9,6 +9,8 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module GetRepos
+  # The GetRepos::Application class represents the application configuration in Rails.
+  # It holds configurations and settings that are relevant to the entire application.
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1
