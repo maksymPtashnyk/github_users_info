@@ -4,7 +4,7 @@ require 'dotenv/load'
 class GithubController < ApplicationController
   def index
     @github_login = params[:github_login]
-    @error = nil;
+    @error = nil
 
     response = make_github_api_request(@github_login)
 
