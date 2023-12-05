@@ -3,58 +3,77 @@ require 'dotenv/load'
 
 class GithubController < ApplicationController
   def index
-    # Get the GitHub login value from the form
     @github_login = params[:github_login]
+    @error = nil;
 
-    # Make a request to the GitHub API using GraphQL
-    response = Faraday.post('https://api.github.com/graphql') do |req|
-      req.headers['Authorization'] = "Bearer #{ENV['GITHUB_API_TOKEN']}"
-      req.headers['Content-Type'] = 'application/json'
-      req.body = { query: graphql_query(@github_login) }.to_json
-    end
+    response = make_github_api_request(@github_login)
 
-    # Process the response from the GitHub API
     if response.success?
       data = JSON.parse(response.body)['data']
-      
-      if data && data['user'] && data['user']['name']
-        @github_name = data['user']['name']
-      else
-        puts 'User name information is missing or invalid'
-      end
-    
-      if data && data['user'] && data['user']['repositories'] && data['user']['repositories']['nodes'].is_a?(Array)
-        @repos = data['user']['repositories']['nodes'].map { |repo| repo['name'] }
-      else
-        puts 'User repositories or nodes information is missing or invalid'
-      end
-      
-      # Fetch the avatar URL if it exists
-      if data && data['user'] && data['user']['avatarUrl']
-        @avatar_url = data['user']['avatarUrl']
-      else
-        puts 'Avatar URL is missing'
-      end
+      extract_github_user_information(data)
     else
-      puts 'Error retrieving data from GitHub'
+      handle_github_api_error
     end
   end
 
   private
 
+  def make_github_api_request(github_login)
+    Faraday.post('https://api.github.com/graphql') do |req|
+      req.headers['Authorization'] = "Bearer #{ENV['GITHUB_API_TOKEN']}"
+      req.headers['Content-Type'] = 'application/json'
+      req.body = { query: graphql_query(github_login) }.to_json
+    end
+  end
+
+  def extract_github_user_information(data)
+    if data && data['user']
+      extract_github_user_name(data['user'])
+      extract_github_repositories(data['user']['repositories'])
+      extract_github_avatar(data['user']['avatarUrl'])
+    else
+      @error = 'User data is missing'
+    end
+  end
+
+  def extract_github_user_name(user_data)
+    @github_name = user_data['name'] if user_data['name']
+    @githun_url = user_data['url']
+  end
+
+  def extract_github_repositories(repositories_data)
+    if repositories_data['totalCount']
+      @repos = repositories_data['nodes'].map { |repo| { name: repo['name'], url: repo['url'] } }
+      @repos_count = repositories_data['totalCount']
+    else
+      @error = 'User repositories information is missing or invalid'
+    end
+  end
+
+  def extract_github_avatar(avatar_url)
+    @avatar_url = avatar_url if avatar_url
+  end
+
   def graphql_query(github_login)
     <<~GRAPHQL
       query {
-        user(login: "#{@github_login}") {
+        user(login: "#{github_login}") {
           name
+          url
           repositories(last: 20) {
+            totalCount
             nodes {
               name
+              url
             }
           }
           avatarUrl
         }
       }
     GRAPHQL
+  end
+
+  def handle_github_api_error
+    @error = 'Error retrieving data from GitHub'
   end
 end

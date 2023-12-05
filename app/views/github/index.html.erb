@@ -2,30 +2,47 @@
   <h1 class="display-4 mb-4">GitHub User Information</h1>
   <%= form_tag('/github', method: 'get', class: 'mb-4') do %>
     <div class="input-group">
-      <%= label_tag(:github_login, 'GitHub Login', class: 'input-group-text') %>
-      <%= text_field_tag(:github_login, nil, required: true, placeholder: 'Enter GitHub login', class: 'form-control') %>
-      <button type="submit" class="btn btn-primary">Find Information</button>
-    </div>
+    <%= label_tag(:github_login, 'GitHub Login', class: 'input-group-text') %>
+    <%= text_field_tag(:github_login, nil, required: true, placeholder: 'Enter GitHub login', class: 'form-control', id: 'github_login') %>
+    <button id="clearInput" class="btn btn-danger" type="button">
+      Clear
+    </button>
+    <button id="findInfoButton" type="submit" class="btn btn-primary">
+      Find Information
+    </button>
+  </div>
   <% end %>
-
-  <% if @github_name.present? || @repos.present? %>
+  <% if !@error %>
     <div class="mt-5">
       <% if @avatar_url.present? %>
         <%= image_tag @avatar_url, alt: 'User Avatar', class: 'avatar rounded-circle mb-3', style: 'width: 100px; height: 100px;' %>
       <% end %>
-      <h2 class="fw-bold"><%= @github_name %></h2>
+      <h2 class="fw-bold"><%= link_to @github_name, @githun_url, target: '_blank' %></h2>
       <ul class="list-group mt-3">
-        <li class="list-group-item list-group-item-primary fw-bold">List of Repositories</li>
+        <li class="list-group-item list-group-item-primary fw-bold">List of Repositories: <%=@repos_count%></li>
         <% @repos.each do |repo| %>
           <li class="list-group-item list-group-item-action">
-            <%= link_to repo, "https://github.com/#{@github_login}/#{repo}", target: '_blank', style: 'text-decoration: none; color: inherit;' %>
+            <%= link_to repo[:name], repo[:url], target: '_blank', style: 'text-decoration: none; color: inherit;' %>
           </li>
         <% end %>
       </ul>
     </div>
   <% else %>
-    <h2 class="mt-5">No user information found</h2>
-  <% end %>
+    <h2 class="mt-5"><%=@error%></h2
+<% end %>
 </div>
+
+<script>
+  // Отримайте доступ до кнопки та поля вводу
+  const clearButton = document.getElementById('clearInput');
+  const githubInput = document.getElementById('github_login');
+
+  // Додайте обробник подій при кліці на кнопку "Clear"
+  clearButton.addEventListener('click', () => {
+    // Очистіть значення у полі вводу
+    githubInput.value = '';
+
+  });
+</script>
 
 
