@@ -8,19 +8,32 @@ require 'dotenv/load'
 class GithubController < ApplicationController
   def index
     @github_login = params[:github_login]
-    @error = nil
+    return handle_blank_login if @github_login.blank?
 
-    response = make_github_api_request(@github_login)
-
-    if response.success?
-      data = JSON.parse(response.body)['data']
-      extract_github_user_information(data)
-    else
-      handle_github_api_error
-    end
+    handle_non_blank_login
   end
 
   private
+
+  def handle_blank_login
+    @message = 'Welcome to my website'
+  end
+
+  def handle_non_blank_login
+    response = make_github_api_request(@github_login)
+    return handle_successful_response(response) if response.success?
+
+    handle_failed_response
+  end
+
+  def handle_successful_response(response)
+    data = JSON.parse(response.body)['data']
+    extract_github_user_information(data)
+  end
+
+  def handle_failed_response
+    @error = 'Error retrieving data from GitHub'
+  end
 
   def make_github_api_request(github_login)
     Faraday.post('https://api.github.com/graphql') do |req|
@@ -50,7 +63,7 @@ class GithubController < ApplicationController
       @repos = repositories_data['nodes'].map { |repo| { name: repo['name'], url: repo['url'] } }
       @repos_count = repositories_data['totalCount']
     else
-      @error = 'User repositories information is missing or invalid'
+      {}
     end
   end
 
@@ -75,9 +88,5 @@ class GithubController < ApplicationController
         }
       }
     GRAPHQL
-  end
-
-  def handle_github_api_error
-    @error = 'Error retrieving data from GitHub'
   end
 end

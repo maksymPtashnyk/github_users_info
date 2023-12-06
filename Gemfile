@@ -49,6 +49,10 @@ gem 'bootsnap', require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]
+  gem 'rails-controller-testing'
+  gem 'rspec-rails'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do
@@ -73,8 +77,9 @@ gem 'graphiql-rails', group: :development
 gem 'graphql'
 
 gem 'dotenv'
-gem 'jslint_on_rails'
+
 gem 'rubocop', require: false
 gem 'rubocop-capybara', '~> 2.19'
 gem 'rubocop-graphql', '~> 1.4'
 gem 'rubocop-rails', '~> 2.22', '>= 2.22.2'
+gem 'rubocop-rspec', '~> 2.25'
