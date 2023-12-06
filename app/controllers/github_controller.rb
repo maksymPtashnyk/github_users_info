@@ -16,7 +16,7 @@ class GithubController < ApplicationController
   private
 
   def handle_blank_login
-    @message = 'Welcome to my website'
+    @message = 'You can see all users repo, just enter user login'
   end
 
   def handle_non_blank_login
