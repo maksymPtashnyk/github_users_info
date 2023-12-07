@@ -5,24 +5,35 @@
  - https://api.github.com/users/<GITHUB_LOGIN>
  - https://api.github.com/users/<GITHUB_LOGIN>/repos
 
-### Using the Project:
-1. Clone the repository:
+### Local Server Setup:
 
-```bash
-git clone https://github.com/maksymPtashnyk/github_users_info.git
-```
+1. **Clone the repository:**
 
-2. Install dependencies:
+    ```bash
+    git clone https://github.com/maksymPtashnyk/github_users_info.git
+    ```
 
-```bash
-bundle install
-```
-3. Run the server:
+2. **Install dependencies:**
 
-```bash
-rails server
-```
-4. Go to http://localhost:3000 in your browser.
+    ```bash
+    bundle install
+    ```
+
+3. **Run the server:**
+
+    ```bash
+    rails server
+    ```
+
+4. **Access the application locally:**
+
+    Open your web browser and go to [http://localhost:3000](http://localhost:3000).
+
+### Accessing the Live Application:
+
+You can directly access and use the application deployed on Heroku without setting it up locally. Visit [GitHub Users Info - Heroku](https://repos-bbbb992225ab.herokuapp.com/) to access the live version of the application.
+
+By following these steps, you can either run the server locally using the provided instructions or directly use the deployed version of the application hosted on Heroku without any local setup.
 
 ## Application Capabilities:
 
